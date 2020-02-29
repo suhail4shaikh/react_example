@@ -3,14 +3,18 @@ import './App.css';
 import Person from './component/person';
 
 class App extends Component {
-    
-    state = {
-        person: [
-            { name: 'Suhail', age: '33' },
-        ],
-        showPerson: false
-    };
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            person: [
+                { name: 'Suhail', age: '33' },
+                { name: 'Nargis', age: '33' },
+                { name: 'Anam', age: '33' },
+            ],
+            showPerson: false
+        };
+    }
 
     handleClick() {
         this.setState({
@@ -22,15 +26,31 @@ class App extends Component {
     }
 
     handleChange(event) {
-        console.log(event.target.value);
         this.setState({
-            ...this.state.person,
             person: [
                 { name: event.target.value, age: '31' },
             ]
         });
     }
 
+    getUpdatedValue = (updateStr) => {
+        this.setState({
+            ...this.state,
+            person:[
+                {
+                    name:updateStr,
+                    age: '31'
+                }
+            ]
+        });
+    }
+
+    deleteHandler(index) {
+        let persons = this.state.person.filter((val,ind) => ind !== index);
+        this.setState({
+            person :persons
+        });
+    }
 
     render() {
         const buttonStyle = {
@@ -45,21 +65,19 @@ class App extends Component {
 
 
         return (
-
-
             <div>
                 <h1>I am react app !!!</h1>
                 <input type="text" onChange={(event) => this.handleChange(event)} />
                 <button style={buttonStyle} onClick={() => this.handleClick()}>Toggle name </button>
-
                 {
-                    this.state.showPerson ? 
-                        this.state.person.map(elm => <Person 
-                            onValueUpdate={ this.handleChange} 
-                            updateState={this.handleClick} 
-                            key={elm.name} 
+                    this.state.person.map( (elm,index) => {
+                        return <Person 
+                            onChange={this.getUpdatedValue} 
+                            delete={() => this.deleteHandler(index)}
                             name={elm.name} 
-                            age={elm.age} />) : null
+                            age={elm.age} 
+                            key={index}/>
+                    })
                 }
             </div>
         )
